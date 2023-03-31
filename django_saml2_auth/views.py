@@ -177,7 +177,9 @@ def acs(r, metadata_id):
     next_url = r.session.get('login_next_url', _default_next_url())
     # use relay state to redirect due to issue described here
     # https://github.com/fangli/django-saml2-auth/issues/112#issuecomment-529542145
-    next_url = r.POST.get('RelayState', next_url)
+    print(f"TESTING: post dict: {r.POST}")
+    print(f"TESTING: post relayState val: {r.POST.get('RelayState')}")
+    next_url = r.POST.get('RelayState') or next_url
 
     if not resp:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
