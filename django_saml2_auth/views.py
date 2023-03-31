@@ -179,7 +179,9 @@ def acs(r, metadata_id):
     # https://github.com/fangli/django-saml2-auth/issues/112#issuecomment-529542145
     print(f"TESTING: post dict: {r.POST}")
     print(f"TESTING: post relayState val: {r.POST.get('RelayState')}")
-    next_url = r.POST.get('RelayState') or next_url
+    relayState = r.POST.get('RelayState')
+    next_url = relayState if relayState and relayState != 'null' else next_url
+    print(f"TESTING: nextUrl val: {next_url}")
 
     if not resp:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
