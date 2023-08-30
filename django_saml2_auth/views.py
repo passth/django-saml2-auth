@@ -96,6 +96,8 @@ def _wrap_url(path):
 
 def _get_saml_client(domain, metadata_id):
     acs_url = domain + get_reverse(["django_saml2_auth:acs"], reverse_args=[metadata_id])
+    print("Domain: " + domain)
+    print("ACS URL: " + acs_url)
 
     metadata_model = SamlMetaData.objects.get(pk=metadata_id)
     content = metadata_model.metadata_contents
