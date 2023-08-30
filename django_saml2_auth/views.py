@@ -61,7 +61,7 @@ def get_current_domain(r):
     print(f"HTTP_HOST header: {r.META.get('HTTP_HOST')}")
     print(f"HTTP_X_FORWARDED_HOST header: {r.META.get('HTTP_X_FORWARDED_HOST')}")
     return '{scheme}://{host}'.format(
-        scheme='https' if r.is_secure() else 'http',
+        scheme='https',
         host=r.get_host(),
     )
 
