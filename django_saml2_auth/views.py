@@ -57,6 +57,9 @@ def _default_next_url():
 def get_current_domain(r):
     if 'ASSERTION_URL' in settings.SAML2_AUTH:
         return settings.SAML2_AUTH['ASSERTION_URL']
+    
+    print(f"HTTP_HOST header: {r.META.get('HTTP_HOST')}")
+    print(f"HTTP_X_FORWARDED_HOST header: {r.META.get('HTTP_X_FORWARDED_HOST')}")
     return '{scheme}://{host}'.format(
         scheme='https' if r.is_secure() else 'http',
         host=r.get_host(),
