@@ -12,8 +12,12 @@ class SamlMetaData(models.Model):
     metadata_contents = models.TextField(blank=True)
     email_domain = models.TextField(unique=True)
     host_name = models.TextField(
+        null=True,
         blank=True, 
-        help_text="e.g. test.example.com"
+        help_text=(
+            "e.g. test.example.com. When populated, only requests coming "
+            "from a specific host will have SAML enabled."
+        ),
     )
 
     enable_saml = models.BooleanField(

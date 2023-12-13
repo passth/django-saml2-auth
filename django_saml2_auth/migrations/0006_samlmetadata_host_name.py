@@ -15,6 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='samlmetadata',
             name='host_name',
-            field=models.TextField(blank=True, help_text='e.g. test.example.com'),
+            field=models.TextField(
+                null=True,
+                blank=True,
+                help_text=(
+                    "e.g. test.example.com. When populated, only requests coming "
+                    "from a specific host will have SAML enabled."
+                )
+            ),
         ),
     ]
