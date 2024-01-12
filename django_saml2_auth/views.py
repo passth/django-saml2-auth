@@ -187,6 +187,7 @@ def acs(r, metadata_id):
     next_url = r.POST.get('RelayState', next_url)
 
     if not resp:
+        logger.warning(f"Denied because no SAMLResponse, r.POST: {r.POST}")
         logger.warning(f"Denied because no SAMLResponse: {resp}")
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
 
