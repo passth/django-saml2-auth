@@ -24,4 +24,9 @@ class Migration(migrations.Migration):
                 )
             ),
         ),
+        migrations.AlterField(
+            model_name='samlmetadata',
+            name='email_domain',
+            field=models.TextField(),
+        ),
     ]
