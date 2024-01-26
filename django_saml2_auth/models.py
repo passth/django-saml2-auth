@@ -37,3 +37,11 @@ class SamlMetaData(models.Model):
 
     def __str__(self):
         return f"<SAML Metadata: {self.email_domain}>"
+
+    class Meta(models.Meta):
+        constraints = [
+            models.UniqueConstraint(
+                fields=["email_domain", "host_name"],
+                name="unique_email_host_name",
+            )
+        ]

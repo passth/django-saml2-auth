@@ -29,4 +29,11 @@ class Migration(migrations.Migration):
             name='email_domain',
             field=models.TextField(),
         ),
+        migrations.AddConstraint(
+            model_name="samlmetadata",
+            constraint=models.UniqueConstraint(
+                fields=["email_domain", "host_name"],
+                name="unique_email_host_name",
+            ),
+        ),
     ]
