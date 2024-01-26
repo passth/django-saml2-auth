@@ -10,7 +10,7 @@ class SamlMetaData(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     metadata_contents = models.TextField(blank=True)
-    email_domain = models.TextField(unique=True)
+    email_domain = models.TextField()
     host_name = models.TextField(
         null=True,
         blank=True, 
