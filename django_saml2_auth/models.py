@@ -10,7 +10,15 @@ class SamlMetaData(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     metadata_contents = models.TextField(blank=True)
-    email_domain = models.TextField(unique=True)
+    email_domain = models.TextField()
+    host_name = models.TextField(
+        null=True,
+        blank=True, 
+        help_text=(
+            "e.g. test.example.com. When populated, only requests coming "
+            "from a specific host will have SAML enabled."
+        ),
+    )
 
     enable_saml = models.BooleanField(
         blank=True, 
@@ -29,3 +37,11 @@ class SamlMetaData(models.Model):
 
     def __str__(self):
         return f"<SAML Metadata: {self.email_domain}>"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["email_domain", "host_name"],
+                name="unique_email_host_name",
+            )
+        ]
