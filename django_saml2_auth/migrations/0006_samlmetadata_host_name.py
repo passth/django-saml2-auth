@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 import passthrough.operations
+import django_migration_linter as linter
 
 
 class Migration(migrations.Migration):
@@ -11,6 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        linter.IgnoreMigration(),
         passthrough.operations.LockTimeout(),
         migrations.AddField(
             model_name='samlmetadata',
