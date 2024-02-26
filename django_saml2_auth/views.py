@@ -55,15 +55,14 @@ def _default_next_url():
     # Lazily evaluate this in case we don't have admin loaded.
     return get_reverse('admin:index')
 
+def get_current_domain(r, metadata_model):
+    if metadata_model.host_name:
+        return f'https://{metadata_model.host_name}'
 
-def get_current_domain(r):
     if 'ASSERTION_URL' in settings.SAML2_AUTH:
         return settings.SAML2_AUTH['ASSERTION_URL']
-    return '{scheme}://{host}'.format(
-        scheme='https',
-        host=r.get_host(),
-    )
 
+    return f'https://{r.get_host()}'
 
 def get_reverse(objs, reverse_args = None):
     '''In order to support different django version, I have to do this '''
@@ -96,10 +95,9 @@ def _wrap_url(path):
         "local": [path]
     }
 
-def _get_saml_client(domain, metadata_id):
-    acs_url = domain + get_reverse(["django_saml2_auth:acs"], reverse_args=[metadata_id])
+def _get_saml_client(domain, metadata_model):
+    acs_url = domain + get_reverse(["django_saml2_auth:acs"], reverse_args=[metadata_model.id])
 
-    metadata_model = SamlMetaData.objects.get(pk=metadata_id)
     content = metadata_model.metadata_contents
 
     with _initialize_temp_file(content) as tmp:            
@@ -178,7 +176,11 @@ def acs(r, metadata_id):
 
     expected_email_domain = metadata.email_domain
 
-    saml_client = _get_saml_client(get_current_domain(r), metadata_id)
+    metadata_model = SamlMetaData.objects.get(pk=metadata_id)
+    saml_client = _get_saml_client(
+        domain=get_current_domain(r, metadata_model), 
+        metadata_model=metadata_model,
+    )
     resp = r.POST.get('SAMLResponse', None)
     
     next_url = r.session.get('login_next_url', _default_next_url())
@@ -296,7 +298,11 @@ def signin(r, metadata_id):
 
     r.session['login_next_url'] = next_url
     
-    saml_client = _get_saml_client(get_current_domain(r), metadata_id)
+    metadata_model = SamlMetaData.objects.get(pk=metadata_id)
+    saml_client = _get_saml_client(
+        domain=get_current_domain(r, metadata_model), 
+        metadata_model=metadata_model,
+    )
     _, info = saml_client.prepare_for_authenticate(relay_state=next_url)
 
     redirect_url = None
