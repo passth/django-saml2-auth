@@ -2,21 +2,26 @@
 
 import django.contrib.postgres.fields
 from django.db import migrations, models
-import passthrough.operations
+from django_saml2_auth.operations import LockTimeout
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_saml2_auth', '0006_samlmetadata_host_name'),
+        ("django_saml2_auth", "0006_samlmetadata_host_name"),
     ]
 
     operations = [
-        passthrough.operations.LockTimeout(
-        ),
+        LockTimeout(),
         migrations.AddField(
-            model_name='samlmetadata',
-            name='exempt_emails',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), blank=True, help_text='Emails that are exempt from SAML.', null=True, size=None),
+            model_name="samlmetadata",
+            name="exempt_emails",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.TextField(),
+                blank=True,
+                help_text="Emails that are exempt from SAML.",
+                null=True,
+                size=None,
+            ),
         ),
     ]
