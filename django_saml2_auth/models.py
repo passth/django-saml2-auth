@@ -1,5 +1,7 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from uuid import uuid4
+
 
 class SamlMetaData(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -13,20 +15,26 @@ class SamlMetaData(models.Model):
     email_domain = models.TextField()
     host_name = models.TextField(
         null=True,
-        blank=True, 
+        blank=True,
         help_text=(
             "e.g. test.example.com. When populated, only requests coming "
             "from a specific host will have SAML enabled."
         ),
     )
+    exempt_emails = ArrayField(
+        models.EmailField(),
+        null=True,
+        blank=True,
+        help_text="Emails that are exempt from SAML.",
+    )
 
     enable_saml = models.BooleanField(
-        blank=True, 
+        blank=True,
         null=True,
         default=False,
     )
     enable_optional_saml = models.BooleanField(
-        blank=True, 
+        blank=True,
         null=True,
         default=False,
         help_text=(
