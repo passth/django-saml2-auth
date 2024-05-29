@@ -22,7 +22,7 @@ class SamlMetaData(models.Model):
         ),
     )
     exempt_emails = ArrayField(
-        models.TextField(),
+        models.EmailField(),
         null=True,
         blank=True,
         help_text="Emails that are exempt from SAML.",

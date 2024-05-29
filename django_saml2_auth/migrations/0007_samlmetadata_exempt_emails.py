@@ -6,7 +6,6 @@ from django_saml2_auth.operations import LockTimeout
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("django_saml2_auth", "0006_samlmetadata_host_name"),
     ]
@@ -17,7 +16,7 @@ class Migration(migrations.Migration):
             model_name="samlmetadata",
             name="exempt_emails",
             field=django.contrib.postgres.fields.ArrayField(
-                base_field=models.TextField(),
+                base_field=models.EmailField(),
                 blank=True,
                 help_text="Emails that are exempt from SAML.",
                 null=True,
