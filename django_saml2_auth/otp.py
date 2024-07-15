@@ -18,7 +18,7 @@ class OTPService:
         self.datetime_provider = DatetimeProvider()
 
     def is_otp_server(self, request):
-        return settings.SAML2_AUTH.get("OTP_HOST") == request.get_host()
+        return settings.SAML2_AUTH.get("OTP_SERVER") == request.get_host()
 
     def generate_fingerprint(self, request):
         user_agent = request.META.get('HTTP_USER_AGENT', '')

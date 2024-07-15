@@ -58,10 +58,8 @@ def _default_next_url():
     return get_reverse('admin:index')
 
 def get_current_domain(r, metadata_model):
-    is_auth_domain = True
-
-    if is_auth_domain:
-        return "https://test.passthrough.com"
+    if metadata_model.enable_otp:
+        return settings.SAML2_AUTH['OTP_SERVER']
 
     if metadata_model.host_name:
         return f'https://{metadata_model.host_name}'

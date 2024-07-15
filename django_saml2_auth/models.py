@@ -42,6 +42,12 @@ class SamlMetaData(models.Model):
             "When True, SAML is optional when it is enabled."
         ),
     )
+    enable_otp = models.BooleanField(
+        blank=True,
+        null=True,
+        default=False,
+        help_text="When True, authenticates the user via the OTP server.",
+    )
 
     def __str__(self):
         return f"<SAML Metadata: {self.email_domain}>"
