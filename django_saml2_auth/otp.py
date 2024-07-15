@@ -21,17 +21,6 @@ class OTPService:
     def is_otp_server(self, request):
         return settings.SAML2_AUTH.get("OTP_SERVER") == request.get_host()
 
-    def generate_fingerprint(self, request):
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-
-        key = f"{ip}{user_agent}"
-        return hashlib.sha256(key.encode()).hexdigest()
-
     def get_otp_endpoint(self, user, next_url: str, token: str) -> str:
         new_query = f"token={token}&uid={user.id}"
         new_path = get_reverse(["django_saml2_auth:otp_login"])
@@ -44,6 +33,17 @@ class OTPService:
             new_query,
             parsed_url.fragment
         ))
+
+    def generate_fingerprint(self, request):
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        key = f"{ip}{user_agent}"
+        return hashlib.sha256(key.encode()).hexdigest()
 
     def generate_otp(
         self,
