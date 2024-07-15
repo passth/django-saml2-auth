@@ -174,6 +174,7 @@ def acs(r, metadata_id):
         metadata_model=metadata_model,
     )
     resp = r.POST.get('SAMLResponse', None)
+
     next_url = r.session.get('login_next_url', _default_next_url())
     # use relay state to redirect due to issue described here
     # https://github.com/fangli/django-saml2-auth/issues/112#issuecomment-529542145
@@ -304,20 +305,20 @@ def otp_login(request):
     return HttpResponseRedirect(next_url)
 
 
-def signin(req, metadata_id):
+def signin(r, metadata_id):
     try:
         import urlparse as _urlparse
         from urllib import unquote
     except:
         import urllib.parse as _urlparse
         from urllib.parse import unquote
-    next_url = req.GET.get('next', _default_next_url())
+    next_url = r.GET.get('next', _default_next_url())
 
     try:
         if 'next=' in unquote(next_url):
             next_url = _urlparse.parse_qs(_urlparse.urlparse(unquote(next_url)).query)['next'][0]
     except:
-        next_url = req.GET.get('next', _default_next_url())
+        next_url = r.GET.get('next', _default_next_url())
 
     # Only permit signin requests where the next_url is a safe URL
     if parse_version(get_version()) >= parse_version('2.0'):
@@ -328,13 +329,13 @@ def signin(req, metadata_id):
     if not url_ok:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
 
-    req.session['login_next_url'] = next_url
+    r.session['login_next_url'] = next_url
     metadata_model = SamlMetaData.objects.get(pk=metadata_id)
     saml_client = _get_saml_client(
-        domain=get_current_domain(req, metadata_model), 
+        domain=get_current_domain(r, metadata_model), 
         metadata_model=metadata_model,
     )
-    _, info = saml_client.prepare_for_authenticate(relay_state=req.build_absolute_uri(next_url))
+    _, info = saml_client.prepare_for_authenticate(relay_state=r.build_absolute_uri(next_url))
 
     redirect_url = None
 
