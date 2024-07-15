@@ -59,3 +59,20 @@ class SamlMetaData(models.Model):
                 name="unique_email_host_name",
             )
         ]
+
+
+class OTPUsage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    token = models.TextField()
+    user_id = models.TextField()
+    payload = models.JSONField()
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["token", "user_id"],
+                name="unique_token_for_user_id",
+            )
+        ]

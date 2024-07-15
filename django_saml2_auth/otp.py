@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.conf import settings
 
+from .models import OTPUsage
 from .utils import get_reverse
 
 
@@ -88,5 +89,13 @@ class OTPService:
 
         if data["fingerprint"] != fingerprint:
             raise ValueError("Invalid fingerprint")
-    
+
+        if OTPUsage.objects.filter(user_id=user.id, token=token).exists():
+            raise ValueError("Token already used")
+
+        OTPUsage.objects.create(
+            user_id=user.id,
+            token=token,
+            payload=data,
+        )
         return data["next_url"]
