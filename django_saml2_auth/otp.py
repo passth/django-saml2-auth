@@ -76,7 +76,6 @@ class OTPService:
             token,
             user.password,
             algorithms=["HS256"],
-            issuer="passthrough",
             options={
                 "verify_signature": True,
                 "verify_iat": True,
